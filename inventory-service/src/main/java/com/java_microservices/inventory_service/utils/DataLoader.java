@@ -1,13 +1,15 @@
-package com.java_microservices.inventory_service.Utils;
+package com.java_microservices.inventory_service.utils;
 
 
 import com.java_microservices.inventory_service.model.entities.Inventory;
 import com.java_microservices.inventory_service.repositories.InventoryRepositories;
+import com.java_microservices.inventory_service.services.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 
 
 @Component
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
 public class DataLoader implements CommandLineRunner {
 
     private final InventoryRepositories inventoryRepositories;
+    private final InventoryService inventoryService;
 
     //add inserts in inventories tables.
     @Override
@@ -30,5 +33,14 @@ public class DataLoader implements CommandLineRunner {
             log.info("Inventory Data Loaded");
         }
         else log.info("Inventory is not empty...nothing to load");
+
+        ArrayList<Boolean> inStock = new ArrayList<>();
+        inStock.add(inventoryService.isInStock("000001"));
+        inStock.add(inventoryService.isInStock("000002"));
+        inStock.add(inventoryService.isInStock("000003"));
+        inStock.add(inventoryService.isInStock("000004"));
+        log.info("InStock: " + inStock);
+
+
     }
 }

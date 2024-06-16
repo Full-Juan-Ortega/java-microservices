@@ -1,0 +1,2 @@
+* REVISAR :
+* endpoints de inventory

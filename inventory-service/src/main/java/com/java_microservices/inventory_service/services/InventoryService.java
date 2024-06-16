@@ -19,7 +19,7 @@ public class InventoryService {
 
     private final InventoryRepositories inventoryRepositories;
 
-    public boolean isInStock(String sku) {
+    public Boolean isInStock(String sku) {
         Optional<Inventory> inventory = inventoryRepositories.findBySku(sku);
         return inventory.isPresent() && inventory.get().getQuantity() > 0;
     }

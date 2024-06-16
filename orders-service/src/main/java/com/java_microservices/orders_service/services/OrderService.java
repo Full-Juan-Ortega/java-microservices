@@ -46,7 +46,7 @@ public class OrderService {
             log.info("Order {} is created", order.getOrderNumber());
 
         }else {
-            throw new IllegalStateException("Not enough in stock");
+            throw new IllegalStateException(result.errorMessages().toString());
         }
 
 
