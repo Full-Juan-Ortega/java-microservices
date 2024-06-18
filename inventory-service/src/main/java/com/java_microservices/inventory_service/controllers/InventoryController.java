@@ -25,6 +25,7 @@ public class InventoryController {
     @PostMapping("/in-stock")
     @ResponseStatus(HttpStatus.OK)
     public BaseResponse areInStock(@RequestBody List<OrderItemsRequest> orderItems){
+
         return inventoryService.areInStock(orderItems);
     }
 

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,7 +26,7 @@ public class OrderService {
     //newOrder should check be able in inventory
 
     //first check be able products in stock
-    public void newOrder(OrderRequest orderRequest) {
+    public BaseResponse newOrder(OrderRequest orderRequest) {
 
         BaseResponse result = webClientBuilder.build()
                 .post()
@@ -36,7 +38,6 @@ public class OrderService {
 
 
         if (result != null && !result.hasError()) {
-
             Order order = new Order();
             order.setOrderNumber(UUID.randomUUID().toString());
             order.setOrderItems(orderRequest.getOrderItems().stream()
@@ -44,14 +45,18 @@ public class OrderService {
                             mapOrderItemRequestToOrderItems(orderItemsRequest, order)).toList());
             orderRepository.save(order);
             log.info("Order {} is created", order.getOrderNumber());
-
+            return result;
         }else {
-            throw new IllegalStateException(result.errorMessages().toString());
+            log.info("Order is not created {}", Arrays.toString(result.errorMessages()));
+            return result;
         }
-
-
-
     }
+
+    public Iterable<Order> getAllOrders(){
+        return orderRepository.findAll();
+    }
+
+
 
     private OrderItems mapOrderItemRequestToOrderItems(OrderItemsRequest orderItemsRequest, Order order) {
         return OrderItems.builder()
@@ -61,7 +66,5 @@ public class OrderService {
                 .order(order)
                 .build();
     }
-
-
 
 }

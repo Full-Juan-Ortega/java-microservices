@@ -24,13 +24,14 @@ public class InventoryService {
         return inventory.isPresent() && inventory.get().getQuantity() > 0;
     }
 
-    public BaseResponse areInStock(List<OrderItemsRequest> orderItems) {
+/*    public BaseResponse areInStock(List<OrderItemsRequest> orderItems) {
         var errorList = new ArrayList<String>();
         List<String> skuList = orderItems.stream().map(OrderItemsRequest::getSku).toList();
         List<Inventory> inventoryList = inventoryRepositories.findBySkuIn(skuList);
 
         orderItems.forEach(orderItem -> {
-            var inventory = inventoryList.stream().filter(i -> i.getSku().equals(orderItem.getSku())).findFirst();
+            var inventory = inventoryList.stream().filter(
+                    i -> i.getSku().equals(orderItem.getSku())).findFirst();
             if (inventory.isEmpty()) {
                 errorList.add("Product with sku not found: " + orderItem.getSku());
             } else if (inventory.get().getQuantity() < orderItem.getQuantity())
@@ -38,5 +39,27 @@ public class InventoryService {
         });
         return errorList.isEmpty() ?
                 new BaseResponse(null) : new BaseResponse(errorList.toArray(new String[0]));
+    }*/
+
+    public BaseResponse areInStock(List<OrderItemsRequest> orderItems) {
+
+        var errorList = new ArrayList<String>();
+
+        List<String> skus = orderItems.stream().map(OrderItemsRequest::getSku).toList();
+
+        List<Inventory> inventoryList = inventoryRepositories.findBySkuIn(skus);
+
+        orderItems.forEach(orderItem -> {
+            var inventory = inventoryList.stream().filter(value -> value.getSku().equals(orderItem.getSku())).findFirst();
+            if (inventory.isEmpty()) {
+                errorList.add("Product with sku " + orderItem.getSku() + " does not exist");
+                log.info("Product with sku " + orderItem.getSku() + " does not exist");
+            } else if (inventory.get().getQuantity() < orderItem.getQuantity()) {
+                errorList.add("Product with sku " + orderItem.getSku() + " has insufficient quantity");
+                log.info("Product with sku " + orderItem.getSku() + " has insufficient quantity");
+            }
+        });
+
+        return errorList.size() > 0 ? new BaseResponse(errorList.toArray(new String[0])) : new BaseResponse(null);
     }
 }

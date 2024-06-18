@@ -1,6 +1,8 @@
 package com.java_microservices.inventory_service.utils;
 
 
+import com.java_microservices.inventory_service.model.dtos.BaseResponse;
+import com.java_microservices.inventory_service.model.dtos.OrderItemsRequest;
 import com.java_microservices.inventory_service.model.entities.Inventory;
 import com.java_microservices.inventory_service.repositories.InventoryRepositories;
 import com.java_microservices.inventory_service.services.InventoryService;
@@ -10,6 +12,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Component
@@ -41,6 +45,12 @@ public class DataLoader implements CommandLineRunner {
         inStock.add(inventoryService.isInStock("000004"));
         log.info("InStock: " + inStock);
 
-
+        BaseResponse baseResponse =
+        inventoryService.areInStock(List.of(
+                OrderItemsRequest.builder().sku("000001").quantity(1).price(1.84).build(),
+                OrderItemsRequest.builder().sku("000002").quantity(11).price(4.00).build(),
+                OrderItemsRequest.builder().sku("000003").quantity(10).price(4.00).build(),
+                OrderItemsRequest.builder().sku("000089").quantity(10).price(4.00).build()));
+        log.info("BaseResponse: " + Arrays.toString(baseResponse.errorMessages()));
     }
 }
