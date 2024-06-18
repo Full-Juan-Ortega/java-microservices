@@ -1,7 +1,6 @@
 package com.java_microservices.orders_service.entities.model;
 
 
-import com.java_microservices.orders_service.entities.model.Order;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderItems {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

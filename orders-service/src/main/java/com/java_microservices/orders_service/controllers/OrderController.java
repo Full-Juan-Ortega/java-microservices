@@ -3,12 +3,14 @@ package com.java_microservices.orders_service.controllers;
 
 import com.java_microservices.orders_service.entities.dtos.BaseResponse;
 import com.java_microservices.orders_service.entities.dtos.OrderRequest;
+import com.java_microservices.orders_service.entities.dtos.OrderResponse;
 import com.java_microservices.orders_service.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/order")
@@ -22,9 +24,15 @@ public class OrderController {
     public String newOrder(@RequestBody OrderRequest orderRequest) {
         BaseResponse result = orderService.newOrder(orderRequest);
         if(!result.hasError())
-            return "Order created successfully ";
+            return "Order created successfully";
         else
             return "Order not created " + Arrays.toString(result.errorMessages());
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<OrderResponse> getAllOrders() {
+        return orderService.getAllOrders();
     }
 
 

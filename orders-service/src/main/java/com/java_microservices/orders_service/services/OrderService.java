@@ -1,10 +1,8 @@
 package com.java_microservices.orders_service.services;
 
+import com.java_microservices.orders_service.entities.dtos.*;
 import com.java_microservices.orders_service.entities.model.Order;
-import com.java_microservices.orders_service.entities.model.OrderItems;
-import com.java_microservices.orders_service.entities.dtos.OrderItemsRequest;
-import com.java_microservices.orders_service.entities.dtos.OrderRequest;
-import com.java_microservices.orders_service.entities.dtos.BaseResponse;
+import com.java_microservices.orders_service.entities.model.OrderItem;
 import com.java_microservices.orders_service.repositories.OrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,19 +50,40 @@ public class OrderService {
         }
     }
 
-    public Iterable<Order> getAllOrders(){
-        return orderRepository.findAll();
+    public List<OrderResponse> getAllOrders(){
+        List<Order> orders = orderRepository.findAll();
+        return orders
+                .stream()
+                .map(this::mapOrderToOrderResponse)
+                .toList();
     }
 
 
 
-    private OrderItems mapOrderItemRequestToOrderItems(OrderItemsRequest orderItemsRequest, Order order) {
-        return OrderItems.builder()
+    private OrderItem mapOrderItemRequestToOrderItems(OrderItemsRequest orderItemsRequest,Order order) {
+        return OrderItem.builder()
                 .sku(orderItemsRequest.getSku())
                 .price(orderItemsRequest.getPrice())
                 .quantity(orderItemsRequest.getQuantity())
                 .order(order)
                 .build();
+    }
+
+    private OrderResponse mapOrderToOrderResponse(Order orders) {
+        return new OrderResponse(
+                orders.getId(),
+                orders.getOrderNumber(),
+                orders.getOrderItems().stream()
+                        .map(this::mapOrderItemToOrderItemResponse).toList());
+    }
+
+    private OrderItemResponse mapOrderItemToOrderItemResponse(OrderItem orderItem) {
+        return new OrderItemResponse(
+                orderItem.getId(),
+                orderItem.getSku(),
+                orderItem.getPrice(),
+                orderItem.getQuantity()
+        );
     }
 
 }
